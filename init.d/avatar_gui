@@ -12,9 +12,10 @@ apps = [
 
 default_port = 3000
 default_options = {
-  :app_dir => '/opt/twinners/',
-  :environment => 'development',
-  :pid_dir => '/var/run'
+  :app_dir => '/opt/adhearsion/twinners/',
+  :environment => 'production',
+  :pid_dir => '/var/run/twinners',
+  :log_dir => '/var/log/twinners'
 }
 
 if ['stop', 'restart'].include? ARGV.first
@@ -32,7 +33,7 @@ if ['start', 'restart'].include? ARGV.first
     path = File.join options[:app_dir], options[:app]
     port = options[:port] || default_port
     puts "Starting #{options[:app]} on #{port}..." 
-    `mongrel_rails start -d -p #{port} -e #{options[:environment]} -c #{path} -P #{options[:pid_dir]}/avatar_gui.pid`
+    `mongrel_rails start -d -p #{port} -e #{options[:environment]} -c #{path} -P #{options[:pid_dir]}/avatar_gui.pid -l #{options[:log_dir]}/avatar_gui.log`
     #default_port = port + 1
   end
 end
