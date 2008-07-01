@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+#
+# mongrel Startup script for Mongrel by Tim Morgan, modified by bmihelac
+#
+# chkconfig: - 85 15
+# description: mongrel manages Mongrel
+#
+
+apps = [
+  {:app => 'gui', :enviornment => 'production', :port => '3000'}
+]
+
+default_port = 3000
+default_options = {
+  :app_dir => '/opt/twinners/',
+  :environment => 'development',
+  :pid_dir => '/var/run'
+}
+
+if ['stop', 'restart'].include? ARGV.first
+  apps.each do |app|
+    options = default_options.merge(app)
+    path = File.join options[:app_dir], options[:app]
+    puts "Stopping #{path}..." 
+    `mongrel_rails stop -c #{path} -P #{options[:pid_dir]}/avatar_gui.pid`
+  end
+end
+
+if ['start', 'restart'].include? ARGV.first
+  apps.each do |app|
+    options = default_options.merge(app)
+    path = File.join options[:app_dir], options[:app]
+    port = options[:port] || default_port
+    puts "Starting #{options[:app]} on #{port}..." 
+    `mongrel_rails start -d -p #{port} -e #{options[:environment]} -c #{path} -P #{options[:pid_dir]}/avatar_gui.pid`
+    #default_port = port + 1
+  end
+end
+
+unless ['start', 'stop', 'restart'].include? ARGV.first
+    puts "Usage: avatar_gui {start|stop|restart}" 
+    exit
+end

@@ -6,7 +6,7 @@
 APP_NAME = "bls"
 @default_options = {
 	:app_dir => '/opt/BLS_Java',
-	:pid_file => '/opt/BLS_Java/log/twinners-core_twinners.pid'
+	:pid_file => '/var/run/twinners-core_twinners.pid'
 }
 
 def start_bls

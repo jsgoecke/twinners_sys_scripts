@@ -4,12 +4,21 @@ load 'deploy' if respond_to?(:namespace) # cap2 differentiator
 PRODUCTION_SERVERS = %w[twinners.us]
 DEPLOYMENT_DIR = '/opt/cap_test/twinners'
  
+# =====================================================
+# SSH OPTIONS
+# =====================================================
+# You must have both the public and private keys available
+# in your .ssh directory
+set :user, "root"
+#set :ssh_options, {:keys => ["/Users/jsgoecke/.ec2/sparklingmedia/id_rsa"] }
+ssh_options[:keys] = [ "#{ENV['HOME']}/Desktop/id_rsa" ]
+
 # Twinners Git/Github setup
 set :scm, :git
 set :twinners_repository, "git@github.com:jicksta/twinners.git"
 
 # Set AMI<->Stomspserver Git/Github setup
-set :twinners_repository, "git@github.com:jicksta/stomptomanagerbridge.git"
+set :stompmanagerbridge_repository, "git@github.com:jicksta/stomptomanagerbridge.git"
  
 # Project-related variables
 set :project_deploy_to_root, DEPLOYMENT_DIR
@@ -132,16 +141,16 @@ namespace :asterisk do
   end
 end
  
-namespace :debian do
+namespace :centos do
   
   task :update_packages do
-    run "apt-get update"
+    run "yum update"
   end
   
   namespace :monit do
     task :install do
       update_packages
-      run "apt-get install -y monit"
+      run "yum install -y monit"
     end
   end
   
@@ -149,8 +158,8 @@ namespace :debian do
     
     task :install do
       update_packages
-      run "apt-get install -y mysql-server-5.0"
-      run "apt-get install -y mysql-client-5.0"
+      run "yum install -y mysql-server-5.0"
+      run "yum install -y mysql-client-5.0"
     end
     
     task :status do
