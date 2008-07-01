@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# bls           This is a startup script for use in /etc/init.d 
+# chkconfig:    2345 90 20 
+# description:  Used to start and stop Adhearsion daemons
+
+APP_NAME = "Adhearsion"
+@default_options = [
+	{ :name => 'twinners', :app_dir => '/opt/twinners', :pid_file => '/opt/twinners/log/twinners-core_twinners.pid' }
+]
+
+def execute_ahn_command cmd
+  @default_options.each do |project|
+    puts "#{cmd.capitlize!}ing #{project[:name]}"
+    system("ahnctl #{cmd} #{project[:app_dir]}")
+  end
+end
+
+case ARGV.first
+  #when 'status'
+	#TBD
+	#puts "Status of #{APP_NAME} is unknown"
+  when 'start'
+	  execute_ahn_command 'start'
+  when 'stop'
+	  execute_ahn_command 'stop'
+  when 'restart'
+    execute_ahn_command 'restart'
+end 
+
+unless %w{start stop restart}.include? ARGV.first
+  puts "Usage: #{APP_NAME} {start|stop|restart}"
+  exit
+end
