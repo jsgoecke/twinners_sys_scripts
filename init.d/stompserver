@@ -1,17 +1,19 @@
 #!/usr/bin/env ruby
 # bls           This is a startup script for use in /etc/init.d 
 # chkconfig:    2345 80 20 
-# description:  Used to start and stop the Twinners BLS Service
+# description:  Used to start and stop the Stompserver Service
 
-APP_NAME = "bls"
+APP_NAME = "stompserver"
 @default_options = {
-	:app_dir => '/opt/BLS_Java',
-	:pid_file => '/var/run/twinners/twinners-core_twinners.pid'
+	:app_dir => '/opt/stomptomanagerbridge',
+	:config_file => '/opt/devstompserver/stompserver.conf',
+	:pid_file => '/opt/devstompserver/log/stompserver.pid',
+	:log_dir => '/opt/devstompserver/log/'
 }
 
 def start_app
   puts "Starting #{APP_NAME}"
-  system("nohup java -jar #{@default_options[:app_dir]}/twinners-core.jar #{@default_options[:app_dir]}/twinners.conf &")
+  system("nohup stompserver -C #{@default_options[:config_file]} &")
 end
 
 def stop_app
