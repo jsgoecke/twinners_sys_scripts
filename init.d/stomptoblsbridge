@@ -17,12 +17,12 @@ def start_app
   puts "Starting #{APP_NAME}"
   daemon_opts = {
     :app_name   => "stomptoblsbridge",
+    :ARGV       => %w(twinners.us 10_000)
     :dir_mode   => :normal,
     :dir        => @default_options[:pid_dir],
     :multiple   => false,
     :ontop      => false,
     :mode       => :exec,
-    :backtrace  => true,
     :monitor    => false,
     :log_output => true
   }
