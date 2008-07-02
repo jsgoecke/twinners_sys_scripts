@@ -74,8 +74,8 @@ check process stomptoblsbridge with pidfile /var/run/interactivechatsystems/stom
 check process ahn with pidfile /var/run/interactivechatsystems/adhearsion.pid
   group interactivechatsystems
   depends on stompserver
-  start program = "/etc/init.d/adh start"
-  stop  program = "/etc/init.d/adh stop"
+  start program = "/etc/init.d/ahn start"
+  stop  program = "/etc/init.d/ahn stop"
   if cpu usage > 10% then alert
   if mem usage > 20% then alert
   #if 5 restarts within 5 cycles then alert
