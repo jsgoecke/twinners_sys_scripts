@@ -26,7 +26,7 @@ def start_app
     :monitor    => false,
     :log_output => true
   }
-  Daemons.run(@default_opions[:app_dir] + '/twinners.rb', daemon_opts)
+  Daemons.run("#{@default_options[:app_dir]}/twinners.rb", daemon_opts)
 end
 
 def stop_app
