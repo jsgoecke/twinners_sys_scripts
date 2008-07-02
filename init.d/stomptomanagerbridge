@@ -6,12 +6,14 @@
 APP_NAME = "stomptomanagerbridge"
 @default_options = {
 	:app_dir => '/opt/interactivechatsystems/stomptomanagerbridge',
-	:pid_file => '/var/run/interactivechatsystems/twinners-core_twinners.pid'
+	:pid_file => '/var/run/interactivechatsystems/stomptomanagerbridge.pid',
+	:log_file => '/var/log/interactivechatsystems/stomptomanagerbridge.log'
 }
 
 def start_app
   puts "Starting #{APP_NAME}"
-  system("nohup java -jar #{@default_options[:app_dir]}/dist/StompToManagerBridge.jar &")
+  system("java -jar #{@default_options[:app_dir]}/dist/StompToManagerBridge.jar > #{@default_options[:log_file]} 2> #{@default_options[:log_file]} &")
+  system("echo $! > #{@default_options[:pid_file]}")
 end
 
 def stop_app
