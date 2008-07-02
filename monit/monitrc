@@ -1,6 +1,6 @@
-/usr/bin/ruby#Monit script for Twinners
+#Monit script for Twinners
 
-set daemon  60
+set daemon  15
 set logfile /var/log/monit.log
 set alert ivr_alert@interactivechatsystems.com
 
@@ -9,14 +9,10 @@ set mailserver localhost with timeout 15 seconds
 set httpd port 9111
   allow localhost
 
-#check process alert_test with pidfile /root/alert_test/log/test.pid
-#  start program = "/root/alert_test/bin/test start"
-#  stop  program = "/root/alert_test/bin/test stop"
-
-check process asterisk with pidfile /var/run/asterisk.pid
+check process asterisk with pidfile /var/run/asterisk/asterisk.pid
   group interactivechatsystems
-  start program = "/usr/sbin/asterisk"
-  stop program = "/usr/sbin/asterisk -rx 'stop now'"
+  start program = "/etc/init.d/asterisk start"
+  stop program = "/etc/init.d/asterisk stop"
   if cpu usage > 10% then alert
   if mem usage > 20% then alert
   #if 5 restarts within 5 cycles then alert
@@ -53,7 +49,8 @@ check process bls with pidfile /var/run/interactivechatsystems/twinners-core_twi
 
 check process stomptomanagerbridge with pidfile /var/run/interactivechatsystems/stomptomanagerbridge.pid
   group interactivechatsystems
-  depends on stompserver asterisk
+  depends on stompserver
+  depends on asterisk
   start program = "/usr/bin/ruby /etc/init.d/stomptomanagerbridge start"
   stop  program = "/usr/bin/ruby /etc/init.d/stomptomanagerbridge stop"
   if cpu usage > 10% then alert
@@ -64,7 +61,8 @@ check process stomptomanagerbridge with pidfile /var/run/interactivechatsystems/
 
 check process stomptoblsbridge with pidfile /var/run/interactivechatsystems/stomptblsbridge.pid
   group interactivechatsystems
-  depends on stompserver bls
+  depends on stompserver
+  depends on bls
   start program = "/usr/bin/ruby /etc/init.d/stomptoblsbridge start"
   stop  program = "/usr/bin/ruby /etc/init.d/stomptoblsbridge stop"
   if cpu usage > 10% then alert
