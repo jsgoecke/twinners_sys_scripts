@@ -5,10 +5,10 @@
 
 APP_NAME = "stompserver"
 @default_options = {
-	:app_dir => '/opt/stomptomanagerbridge',
-	:config_file => '/opt/devstompserver/stompserver.conf',
-	:pid_file => '/opt/devstompserver/log/stompserver.pid',
-	:log_dir => '/opt/devstompserver/log/'
+	:app_dir => '/opt/interactivechatsystems/stompserver',
+	:config_file => '/opt/interactivechatsystems/stompserver/stompserver.conf',
+	:pid_file => '/opt/interactivechatsystems/stompserver/log/stompserver.pid',
+	:log_dir => '/opt/interactivechatsystems/stompserver/log/'
 }
 
 def start_app

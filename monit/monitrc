@@ -15,7 +15,7 @@ set httpd port 9111
 #  stop  program = "/root/alert_test/bin/test stop"
 
 check process asterisk with pidfile /var/run/asterisk.pid
-  group asterisk
+  group interactivechatsystems
   start program = "/usr/sbin/asterisk"
   stop program = "/usr/sbin/asterisk -rx 'stop now'"
   if cpu usage > 10% then alert
@@ -25,7 +25,7 @@ check process asterisk with pidfile /var/run/asterisk.pid
                                                   match nonexist permission size timeout timestamp }
 
 check process bls with pidfile /var/run/bls.pid
-  group bls
+  group interactivechatsystems
   start program = "/usr/local/bin/ruby /etc/init.d/bls start"
   stop  program = "/usr/local/bin/ruby /etc/init.d/bls stop"
   if cpu usage > 10% then alert
@@ -35,7 +35,7 @@ check process bls with pidfile /var/run/bls.pid
                                                   match nonexist permission size timeout timestamp }
 
 check process avatar_gui with pidfile /var/run/avatar_gui.80.pid
-  group adhearsion
+  group interactivechatsystems
   start program = "/usr/local/bin/ruby /etc/init.d/avatar_gui start"
   stop  program = "/usr/local/bin/ruby /etc/init.d/avatar_gui stop"
   if cpu usage > 10% then alert
@@ -43,7 +43,7 @@ check process avatar_gui with pidfile /var/run/avatar_gui.80.pid
   if 5 restarts within 5 cycles then alert
 												
 check process ahn with pidfile /var/run/adhearsion.pid
-  group adhearsion
+  group interactivechatsystems
   start program = "/usr/local/bin/ruby /etc/init.d/adhearsion start"
   stop  program = "/usr/local/bin/ruby /etc/init.d/adhearsion stop"
   if cpu usage > 10% then alert

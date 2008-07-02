@@ -3,6 +3,7 @@ load 'deploy' if respond_to?(:namespace) # cap2 differentiator
  
 PRODUCTION_SERVERS = %w[twinners.us]
 DEPLOYMENT_DIR = '/opt/cap_test/twinners'
+default_run_options[:pty] = true
 
 # Twinners Git/Github setup
 set :scm, :git

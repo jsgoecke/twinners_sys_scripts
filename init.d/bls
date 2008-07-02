@@ -5,8 +5,8 @@
 
 APP_NAME = "bls"
 @default_options = {
-	:app_dir => '/opt/BLS_Java',
-	:pid_file => '/var/run/twinners/twinners-core_twinners.pid'
+	:app_dir => '/opt/interactivechatsystems/bls',
+	:pid_file => '/var/run/interactivechatsystems/twinners-core_twinners.pid'
 }
 
 def start_app
