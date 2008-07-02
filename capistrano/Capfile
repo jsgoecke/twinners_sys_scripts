@@ -3,15 +3,6 @@ load 'deploy' if respond_to?(:namespace) # cap2 differentiator
  
 PRODUCTION_SERVERS = %w[twinners.us]
 DEPLOYMENT_DIR = '/opt/cap_test/twinners'
- 
-# =====================================================
-# SSH OPTIONS
-# =====================================================
-# You must have both the public and private keys available
-# in your .ssh directory
-set :user, "root"
-#set :ssh_options, {:keys => ["/Users/jsgoecke/.ec2/sparklingmedia/id_rsa"] }
-ssh_options[:keys] = [ "#{ENV['HOME']}/Desktop/id_rsa" ]
 
 # Twinners Git/Github setup
 set :scm, :git
@@ -67,14 +58,14 @@ after 'deploy:setup', 'ahn:init'
 after 'deploy:setup', :chmod_adhearsion_folder
  
 task :chmod_adhearsion_folder do
-  sudo "chown -R #{user} #{DEPLOYMENT_DIR}/adhearsion"
-  sudo "chgrp -R #{group} #{DEPLOYMENT_DIR}/adhearsion"
+  run "chown -R #{user} #{DEPLOYMENT_DIR}/adhearsion"
+  run "chgrp -R #{group} #{DEPLOYMENT_DIR}/adhearsion"
 end
  
 task :create_twinners_folder do
-  sudo 'mkdir /opt/cap_test/twinners'
-  sudo "chown -R #{user} #{DEPLOYMENT_DIR}"
-  sudo "chgrp -R #{group} #{DEPLOYMENT_DIR}"
+  run 'mkdir /opt/cap_test/twinners'
+  run "chown -R #{user} #{DEPLOYMENT_DIR}"
+  run "chgrp -R #{group} #{DEPLOYMENT_DIR}"
 end
  
 task :production do
