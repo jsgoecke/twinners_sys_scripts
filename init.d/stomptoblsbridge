@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+# bls           This is a startup script for use in /etc/init.d 
+# chkconfig:    2345 80 20 
+# description:  Used to start and stop the Stomp <-> Manager Bridge Service
+require 'daemons'
+
+APP_NAME = "stomptoblsbridge"
+@default_options = {
+	:app_dir => '/opt/interactivechatsystems/twinners/twinners',
+	:pid_dir => '/var/run/interactivechatsystems',
+	:pid_file => '/var/run/interactivechatsystems/stomptoblsbridge.pid',
+	:log_dir => '/var/log/interactivechatsystems'
+}
+
+def start_app
+  puts "Starting #{APP_NAME}"
+  daemon_opts = {
+    :app_name   => "stomptoblsbridge",
+    :dir_mode   => :normal,
+    :dir        => @default_options[:pid_dir],
+    :multiple   => false,
+    :ontop      => false,
+    :mode       => :exec,
+    :backtrace  => true,
+    :monitor    => false,
+    :log_output => true
+  }
+  Daemons.run(@default_opions[:app_dir] + '/twinners.rb', daemon_opts)
+end
+
+def stop_app
+  pid = File.read(@default_options[:pid_file])
+  puts "Stopping #{APP_NAME} with pid #{pid}"
+  begin
+  	Process.kill(9, pid.to_i)
+  rescue => err
+	puts err
+  end
+end
+
+case ARGV.first
+  when 'status'
+	pid = File.read(@default_options[:pid_file])
+	pid_status = system("ps -p #{pid.to_i}")
+	if pid_status == TRUE
+	  pid_status = "running with pid #{pid}"
+    else
+      pid_status = "not running"
+	end
+	puts "Status of #{APP_NAME} is #{pid_status}"
+  when 'start'
+	start_app
+  when 'stop'
+	stop_app
+  when 'restart'
+	puts "Re-starting #{APP_NAME}"
+	stop_app
+	start_app
+end 
+
+unless %w{start stop restart status}.include? ARGV.first
+  puts "Usage: #{APP_NAME} {start|stop|restart}"
+  exit
+end
