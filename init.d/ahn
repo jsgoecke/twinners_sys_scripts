@@ -7,7 +7,7 @@ APP_NAME = "ahn"
 @default_options = [ {
   :name => 'twinners', 
   :app_dir => '/opt/interactivechatsystems/twinners',
-  :pid_file => '/var/run/interactivechatsystems/twinners.pid' 
+  :pid_file => '/var/run/interactivechatsystems/adhearsion.pid' 
 } ]
 
 

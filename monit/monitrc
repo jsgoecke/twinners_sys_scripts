@@ -21,8 +21,8 @@ check process asterisk with pidfile /var/run/asterisk/asterisk.pid
 
 check process stompserver with pidfile /opt/interactivechatsystems/stompserver/log/stompserver.pid
   group interactivechatsystems
-  start program = "/usr/bin/ruby /etc/init.d/stompserver start"
-  stop  program = "/usr/bin/ruby /etc/init.d/stompserver stop"
+  start program = "/etc/init.d/stompserver start"
+  stop  program = "/etc/init.d/stompserver stop"
   if cpu usage > 10% then alert
   if mem usage > 20% then alert
   #if 5 restarts within 5 cycles then alert
@@ -31,8 +31,8 @@ check process stompserver with pidfile /opt/interactivechatsystems/stompserver/l
 
 check process bls with pidfile /var/run/interactivechatsystems/twinners-core_twinners.pid
   group interactivechatsystems
-  start program = "/usr/bin/ruby /etc/init.d/bls start"
-  stop  program = "/usr/bin/ruby /etc/init.d/bls stop"
+  start program = "/etc/init.d/bls start"
+  stop  program = "/etc/init.d/bls stop"
   if cpu usage > 10% then alert
   if mem usage > 20% then alert
   #if 5 restarts within 5 cycles then alert
@@ -41,8 +41,8 @@ check process bls with pidfile /var/run/interactivechatsystems/twinners-core_twi
 
 #check process avatar_gui with pidfile /var/run/avatar_gui.80.pid
 #  group interactivechatsystems
-#  start program = "/usr/bin/ruby /etc/init.d/avatar_gui start"
-#  stop  program = "/usr/bin/ruby /etc/init.d/avatar_gui stop"
+#  start program = "/etc/init.d/avatar_gui start"
+#  stop  program = "/etc/init.d/avatar_gui stop"
 #  if cpu usage > 10% then alert
 #  if mem usage > 20% then alert
 #  if 5 restarts within 5 cycles then alert
@@ -51,20 +51,20 @@ check process stomptomanagerbridge with pidfile /var/run/interactivechatsystems/
   group interactivechatsystems
   depends on stompserver
   depends on asterisk
-  start program = "/usr/bin/ruby /etc/init.d/stomptomanagerbridge start"
-  stop  program = "/usr/bin/ruby /etc/init.d/stomptomanagerbridge stop"
+  start program = "/etc/init.d/stomptomanagerbridge start"
+  stop  program = "/etc/init.d/stomptomanagerbridge stop"
   if cpu usage > 10% then alert
   if mem usage > 20% then alert
   #if 5 restarts within 5 cycles then alert
   #alert ivr_alert@interactivechatsystems.com on { change checksum data exec gid icmp invalid
   #                                                match nonexist permission size timeout timestamp }
 
-check process stomptoblsbridge with pidfile /var/run/interactivechatsystems/stomptblsbridge.pid
+check process stomptoblsbridge with pidfile /var/run/interactivechatsystems/stomptoblsbridge.pid
   group interactivechatsystems
   depends on stompserver
   depends on bls
-  start program = "/usr/bin/ruby /etc/init.d/stomptoblsbridge start"
-  stop  program = "/usr/bin/ruby /etc/init.d/stomptoblsbridge stop"
+  start program = "/etc/init.d/stomptoblsbridge start"
+  stop  program = "/etc/init.d/stomptoblsbridge stop"
   if cpu usage > 10% then alert
   if mem usage > 20% then alert
   #if 5 restarts within 5 cycles then alert
@@ -74,8 +74,8 @@ check process stomptoblsbridge with pidfile /var/run/interactivechatsystems/stom
 check process ahn with pidfile /var/run/interactivechatsystems/adhearsion.pid
   group interactivechatsystems
   depends on stompserver
-  start program = "/usr/bin/ruby /etc/init.d/adh start"
-  stop  program = "/usr/bin/ruby /etc/init.d/adh stop"
+  start program = "/etc/init.d/adh start"
+  stop  program = "/etc/init.d/adh stop"
   if cpu usage > 10% then alert
   if mem usage > 20% then alert
   #if 5 restarts within 5 cycles then alert

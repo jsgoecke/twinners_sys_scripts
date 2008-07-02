@@ -13,7 +13,7 @@ APP_NAME = "stompserver"
 
 def start_app
   puts "Starting #{APP_NAME}"
-  system("nohup stompserver -C #{@default_options[:config_file]} &")
+  system("stompserver -C #{@default_options[:config_file]} 2>&1 >> #{@default_options[:log_dir]}/stompserver.log &")
 end
 
 def stop_app

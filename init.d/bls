@@ -6,12 +6,13 @@
 APP_NAME = "bls"
 @default_options = {
 	:app_dir => '/opt/interactivechatsystems/bls',
-	:pid_file => '/var/run/interactivechatsystems/twinners-core_twinners.pid'
+	:pid_file => '/var/run/interactivechatsystems/twinners-core_twinners.pid',
+	:log_dir => '/opt/interactivechatsystems/bls/log'
 }
 
 def start_app
   puts "Starting #{APP_NAME}"
-  system("nohup java -jar #{@default_options[:app_dir]}/twinners-core.jar #{@default_options[:app_dir]}/twinners.conf &")
+  system("java -jar #{@default_options[:app_dir]}/twinners-core.jar #{@default_options[:app_dir]}/twinners.conf 2>&1 >> #{@default_options[:log_dir]}/console.log &")
 end
 
 def stop_app
