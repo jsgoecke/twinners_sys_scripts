@@ -2,6 +2,7 @@
 # bls           This is a startup script for use in /etc/init.d 
 # chkconfig:    2345 80 20 
 # description:  Used to start and stop the Stomp <-> Manager Bridge Service
+require 'rubygems'
 require 'daemons'
 
 APP_NAME = "stomptoblsbridge"
