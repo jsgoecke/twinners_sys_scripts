@@ -4,14 +4,17 @@
 # description:  Used to start and stop Adhearsion daemons
 
 APP_NAME = "Adhearsion"
-@default_options = [
-	{ :name => 'twinners', :app_dir => '/opt/twinners', :pid_file => '/opt/twinners/log/twinners-core_twinners.pid' }
-]
+@default_options = [ {
+  :name => 'twinners', 
+  :app_dir => '/opt/interactivechatsystems/twinners',
+  :pid_file => '/var/run/interactivechatsystems/twinners.pid' 
+} ]
+
 
 def execute_ahn_command cmd
   @default_options.each do |project|
     puts "#{cmd.capitlize!}ing #{project[:name]}"
-    system("ahnctl #{cmd} #{project[:app_dir]}")
+    system("/usr/local/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahnctl #{cmd} #{project[:app_dir]} --pid-file=#{project[:pid_file]}")
   end
 end
 
