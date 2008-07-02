@@ -3,7 +3,7 @@
 # chkconfig:    2345 90 20 
 # description:  Used to start and stop Adhearsion daemons
 
-APP_NAME = "Adhearsion"
+APP_NAME = "ahn"
 @default_options = [ {
   :name => 'twinners', 
   :app_dir => '/opt/interactivechatsystems/twinners',

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # bls           This is a startup script for use in /etc/init.d 
-# chkconfig:    2345 80 20 
+# chkconfig:    2345 90 20 
 # description:  Used to start and stop the Stomp <-> Manager Bridge Service
 
 APP_NAME = "stomptomanagerbridge"
