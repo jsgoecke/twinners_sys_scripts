@@ -12,8 +12,7 @@ APP_NAME = "stomptomanagerbridge"
 
 def start_app
   puts "Starting #{APP_NAME}"
-  system("java -jar #{@default_options[:app_dir]}/dist/StompToManagerBridge.jar > #{@default_options[:log_file]} 2> #{@default_options[:log_file]} &")
-  system("echo $! > #{@default_options[:pid_file]}")
+  system("java -jar #{@default_options[:app_dir]}/dist/StompToManagerBridge.jar > #{@default_options[:log_file]} 2> #{@default_options[:log_file]} & echo $! > #{@default_options[:pid_file]} &")
 end
 
 def stop_app
