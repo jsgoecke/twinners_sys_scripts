@@ -9,7 +9,7 @@ APP_NAME = "ahn"
   :app_dir => '/opt/interactivechatsystems/twinners',
   :pid_file => '/var/run/interactivechatsystems/adhearsion.pid' 
 } ]
-
+ENV['PATH'] += ':/usr/bin:/opt/interactivechatsystems/adhearsion/bin'
 
 def execute_ahn_command cmd
   @default_options.each do |project|
