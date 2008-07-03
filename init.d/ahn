@@ -12,7 +12,7 @@ APP_NAME = "ahn"
 #ENV['PATH'] += ':/usr/bin:/opt/interactivechatsystems/adhearsion/bin'
 
 def start_app
-  puts "#{cmd.capitalize}ing #{@default_options[:name]}"
+  puts "Starting #{@default_options[:name]}"
   #system("/usr/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahnctl #{cmd} #{project[:app_dir]} --pid-file=#{project[:pid_file]} &")
   system("/usr/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahn start #{@default_options[:app_dir]} 2>&1 >> /dev/null & echo $! > #{@default_options[:pid_file]} &")
 end
