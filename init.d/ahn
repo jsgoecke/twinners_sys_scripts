@@ -15,7 +15,7 @@ def start_app cmd
   @default_options.each do |project|
     puts "#{cmd.capitalize}ing #{project[:name]}"
     #system("/usr/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahnctl #{cmd} #{project[:app_dir]} --pid-file=#{project[:pid_file]} &")
-    system("/usr/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahn #{cmd} #{project[:app_dir]} 2>&1 >> /dev/null & echo $! > #{@default_options[:pid_file]} &")
+    system("/usr/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahn #{cmd} #{project[:app_dir]} 2>&1 >> /dev/null & echo $! > #{project[:pid_file]} &")
   end
 end
 
