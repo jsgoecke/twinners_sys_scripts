@@ -11,11 +11,21 @@ APP_NAME = "ahn"
 } ]
 ENV['PATH'] += ':/usr/bin:/opt/interactivechatsystems/adhearsion/bin'
 
-def start_app cmd
+def start_app
   @default_options.each do |project|
     puts "#{cmd.capitalize}ing #{project[:name]}"
     #system("/usr/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahnctl #{cmd} #{project[:app_dir]} --pid-file=#{project[:pid_file]} &")
-    system("/usr/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahn #{cmd} #{project[:app_dir]} 2>&1 >> /dev/null & echo $! > #{project[:pid_file]} &")
+    system("/usr/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahn start #{project[:app_dir]} 2>&1 >> /dev/null & echo $! > #{project[:pid_file]} &")
+  end
+end
+
+def stop_app
+  pid = File.read(@default_options[:pid_file])
+  puts "Stopping #{APP_NAME} with pid #{pid}"
+  begin
+  	Process.kill(9, pid.to_i)
+  rescue => err
+	puts err
   end
 end
 
@@ -24,11 +34,12 @@ case ARGV.first
 	#TBD
 	#puts "Status of #{APP_NAME} is unknown"
   when 'start'
-	  start_app 'start'
+	  start_app 
   when 'stop'
-	  start_app 'stop'
+	  stop_app 
   when 'restart'
-    start_app 'restart'
+    stop_app
+    start_app 
 end 
 
 unless %w{start stop restart}.include? ARGV.first
