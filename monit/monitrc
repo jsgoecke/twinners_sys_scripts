@@ -1,10 +1,12 @@
 #Monit script for Twinners
 
-set daemon  15
+set daemon 60
 set logfile /var/log/monit.log
 set alert ivr_alert@interactivechatsystems.com
 
 set mailserver localhost with timeout 15 seconds
+set mailfrom monit@interactivechatsystems.com
+set mailsubject "Alert from IVR server"
 
 set httpd port 9111
   allow localhost

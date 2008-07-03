@@ -13,8 +13,8 @@ APP_NAME = "ahn"
 
 def execute_ahn_command cmd
   @default_options.each do |project|
-    puts "#{cmd.capitalize}ing #{project[:name]}"
-    system("/usr/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahnctl #{cmd} #{project[:app_dir]} --pid-file=#{project[:pid_file]}")
+    puts "#{cmd.capitalize}ing #{project[:name]} with pid #{pid}"
+    system("/usr/bin/ruby /opt/interactivechatsystems/adhearsion/bin/ahnctl #{cmd} #{project[:app_dir]} --pid-file=#{project[:pid_file]} &")
   end
 end
 
