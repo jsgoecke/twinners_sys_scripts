@@ -10,7 +10,8 @@ APP_NAME = "stomptoblsbridge"
 	:app_dir => '/opt/interactivechatsystems/twinners/twinners',
 	:pid_dir => '/var/run/interactivechatsystems',
 	:pid_file => '/var/run/interactivechatsystems/stomptoblsbridge.pid',
-	:log_dir => '/var/log/interactivechatsystems'
+	:log_dir => '/var/log/interactivechatsystems',
+	:log_file => '/var/log/interactivechatsystems/stomptoblsbridge.log'
 }
 
 def start_app
@@ -26,7 +27,8 @@ def start_app
     :monitor    => false,
     :log_output => true
   }
-  Daemons.run("#{@default_options[:app_dir]}/twinners.rb", daemon_opts)
+  #Daemons.run("#{@default_options[:app_dir]}/twinners.rb", daemon_opts)
+  system("ruby #{@default_options[:app_dir]}/twinners.rb 2>&1 >> #{@default_options[:log_file]} & echo $! > #{@default_options[:pid_file]} &)
 end
 
 def stop_app
