@@ -28,7 +28,7 @@ def start_app
     :log_output => true
   }
   #Daemons.run("#{@default_options[:app_dir]}/twinners.rb", daemon_opts)
-  system("ruby #{@default_options[:app_dir]}/twinners.rb 2>&1 >> #{@default_options[:log_file]} & echo $! > #{@default_options[:pid_file]} &)
+  system("ruby #{@default_options[:app_dir]}/twinners.rb 2>&1 >> #{@default_options[:log_file]} & echo $! > #{@default_options[:pid_file]} &")
 end
 
 def stop_app
