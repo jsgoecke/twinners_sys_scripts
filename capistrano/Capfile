@@ -19,10 +19,6 @@ set :twinners_install_dir, DEPLOYMENT_DIR + "/twinners"
 set :bls_repository, "git@github.com:interactivechatsystems/bls_runtime.git"
 set :bls_install_dir, DEPLOYMENT_DIR + "/bls"
 
-#Repo that stores the configuration information for the Stomp Server
-set :stompserver_repository, ""
-set :stomptoserver_install_dir, DEPLOYMENT_DIR + "/stomptoserver"
-
 #Repo for the Stomp<->Manager Bridge
 set :stomptomanagerbridge_repository, "git@github.com:jicksta/stomptomanagerbridge.git"
 set :stomptomanagerbridge_install_dir, DEPLOYMENT_DIR + "/stomptomanagerbridge"
@@ -69,13 +65,12 @@ before 'deploy', :stop_monit
 after 'deploy:setup', :create_ics_user
 after 'deploy:setup', :create_ics_folder
 after 'deploy:setup', :create_var_dirs
+after 'deploy:setup', 'twinners_sys_scripts:init'
 after 'deploy:setup', 'ahn:init'
 after 'deploy:setup', 'bls:init'
 after 'deploy:setup', 'stomptomanagerbridge:init'
-after 'deploy:setup', 'twinners_sys_scripts:init'
 after 'deploy:setup', :chmod_ics_folders
-after 'deploy:setup', 'asterisk:init'
-after 'deploy, :start_monit
+after 'deploy', :start_monit
  
 task :create_ics_user do
   run "adduser ics || true"
@@ -239,13 +234,20 @@ namespace :twinners_sys_scripts do
 
   task :init do
     run "git clone #{twinners_sys_scripts_repository} #{twinners_sys_scripts_install_dir}"
+
+	#Create all of the appropriate symbolic links for init.d
 	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/ahn /etc/init.d/ahn"
 	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/bls /etc/init.d/bls"
 	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/stompserver /etc/init.d/stompserver"
 	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/stomptoblsbridge /etc/init.d/stomptoblsbridge"
 	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/stomptomanagerbridge /etc/init.d/stomptomanagerbridge"
 	run "cp -f #{twinners_sys_scripts_install_dir}/monit/monitrc /etc/monitrc"
-	run "cp -f #{twinners_sys_scripts_install_dir}/stompserver/stompserver.conf #{DEPLOYMENT_DIR}/stompserver"
+	
+	#Create and copy the stompserver configuration
+	run "mkdir #{DEPLOYMENT_DIR}/stompserver"
+	run "mkdir #{DEPLOYMENT_DIR}/stompserver/etc"
+	run "mkdir #{DEPLOYMENT_DIR}/stompserver/log"
+	run "cp -f #{twinners_sys_scripts_install_dir}/stompserver/stompserver.conf #{DEPLOYMENT_DIR}/stompserver/."
 	run "cp -f #{twinners_sys_scripts_install_dir}/stompserver/passwd #{DEPLOYMENT_DIR}/stompserver/etc/.passwd"
   end
 
