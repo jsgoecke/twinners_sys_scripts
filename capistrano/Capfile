@@ -65,19 +65,20 @@ depend :remote, :gem, "daemons", ">= 1.0.10"
 depend :remote, :gem, "stompserver", ">= 0.9.9"
  
 #before 'deploy', 'ahn:update'
-#after 'deploy:setup', :create_ics_user
-#after 'deploy:setup', :create_ics_folder
-#after 'deploy:setup', :create_var_dirs
-#after 'deploy:setup', 'ahn:init'
-#after 'deploy:setup', 'bls:init'
-#after 'deploy:setup', 'stomptomanagerbridge:init'
-#after 'deploy:setup', 'twinners_sys_scripts:init'
-#after 'deploy:setup', :create_stompserver_config
-#after 'deploy:setup', :chmod_ics_folders
+before 'deploy', :stop_monit
+after 'deploy:setup', :create_ics_user
+after 'deploy:setup', :create_ics_folder
+after 'deploy:setup', :create_var_dirs
+after 'deploy:setup', 'ahn:init'
+after 'deploy:setup', 'bls:init'
+after 'deploy:setup', 'stomptomanagerbridge:init'
+after 'deploy:setup', 'twinners_sys_scripts:init'
+after 'deploy:setup', :chmod_ics_folders
 after 'deploy:setup', 'asterisk:init'
+after 'deploy, :start_monit
  
 task :create_ics_user do
-  run "adduser ics"
+  run "adduser ics || true"
 end
 
 task :create_ics_folder do
@@ -99,39 +100,20 @@ task :create_var_dirs do
   end
 end
 
-task :create_stompserver_config do
-
-  #First generate the directories we need
-  begin
-    run "mkdir #{DEPLOYMENT_DIR}/stompserver"
-    run "mkdir #{DEPLOYMENT_DIR}/stompserver/log"
-    run "mkdir #{DEPLOYMENT_DIR}/stompserver/etc"
-  rescue => err   
-  end
-
-  #Then the configuration file
-  run "echo '---' > #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-  run "echo ':daemon: true' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-  run "echo ':working_dir:' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-  run "echo ':storage: .queue' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-  run "echo ':queue: file' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-  run "echo ':auth: true' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-  run "echo ':debug: true' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-  run "echo ':group:' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-  run "echo ':user:' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-  run "echo ':host: 0.0.0.0' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-  run "echo ':port: 61613' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
-
-  #Then the password file
-  run "echo 'testing:f13fa60c2ba5' > #{DEPLOYMENT_DIR}/stompserver/etc/.passwdc"
-end
-
 task :production do
   set :user, "root"
   set :use_sudo, "false"
   role :app, *PRODUCTION_SERVERS
 end
- 
+
+task :stop_monit do
+  run "monit stop all || true"
+end
+
+task :start_monit do
+  run "monit start all"
+end
+
 before 'deploy:update', 'ahn:stop'
 after 'deploy', 'ahn:start'
  
@@ -263,6 +245,8 @@ namespace :twinners_sys_scripts do
 	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/stomptoblsbridge /etc/init.d/stomptoblsbridge"
 	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/stomptomanagerbridge /etc/init.d/stomptomanagerbridge"
 	run "cp -f #{twinners_sys_scripts_install_dir}/monit/monitrc /etc/monitrc"
+	run "cp -f #{twinners_sys_scripts_install_dir}/stompserver/stompserver.conf #{DEPLOYMENT_DIR}/stompserver"
+	run "cp -f #{twinners_sys_scripts_install_dir}/stompserver/passwd #{DEPLOYMENT_DIR}/stompserver/etc/.passwd"
   end
 
   task :update do
@@ -273,13 +257,13 @@ end
 
 namespace :asterisk do
 
-  task :init do
-	run "wget http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.21.1.tar.gz"
-	run "tar -zxvf asterisk-1.4.21.1.tar.gz"
-	run "asterisk-1.4.21.1/configure"
-	run "asterisk-1.4.21.1/make"
+  #task :init do
+	#run "wget http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.21.1.tar.gz"
+	#run "tar -zxvf asterisk-1.4.21.1.tar.gz"
+	#run "asterisk-1.4.21.1/configure"
+	#run "asterisk-1.4.21.1/make"
 	#run "asterisk-1.4.21.1/make install"
-  end
+  #end
 
   task :reload do
     run "asterisk -rx reload"
