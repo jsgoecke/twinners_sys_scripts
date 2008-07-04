@@ -64,16 +64,17 @@ depend :remote, :gem, "sqlite3-ruby", ">= 1.2.1"
 depend :remote, :gem, "daemons", ">= 1.0.10"
 depend :remote, :gem, "stompserver", ">= 0.9.9"
  
-before 'deploy', 'ahn:update'
-after 'deploy:setup', :create_ics_user
-after 'deploy:setup', :create_ics_folder
-after 'deploy:setup', :create_var_dirs
-after 'deploy:setup', 'ahn:init'
-after 'deploy:setup', 'bls:init'
-after 'deploy:setup', 'stomptomanagerbridge:init'
-after 'deploy:setup', 'twinners_sys_scripts:init'
-after 'deploy:setup', :create_stompserver_config
-after 'deploy:setup', :chmod_ics_folders
+#before 'deploy', 'ahn:update'
+#after 'deploy:setup', :create_ics_user
+#after 'deploy:setup', :create_ics_folder
+#after 'deploy:setup', :create_var_dirs
+#after 'deploy:setup', 'ahn:init'
+#after 'deploy:setup', 'bls:init'
+#after 'deploy:setup', 'stomptomanagerbridge:init'
+#after 'deploy:setup', 'twinners_sys_scripts:init'
+#after 'deploy:setup', :create_stompserver_config
+#after 'deploy:setup', :chmod_ics_folders
+after 'deploy:setup', 'asterisk:init'
  
 task :create_ics_user do
   run "adduser ics"
@@ -271,6 +272,15 @@ namespace :twinners_sys_scripts do
 end
 
 namespace :asterisk do
+
+  task :init do
+	run "wget http://downloads.digium.com/pub/asterisk/releases/asterisk-1.4.21.1.tar.gz"
+	run "tar -zxvf asterisk-1.4.21.1.tar.gz"
+	run "asterisk-1.4.21.1/configure"
+	run "asterisk-1.4.21.1/make"
+	#run "asterisk-1.4.21.1/make install"
+  end
+
   task :reload do
     run "asterisk -rx reload"
   end
