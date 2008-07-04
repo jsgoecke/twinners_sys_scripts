@@ -25,7 +25,7 @@ set :stomptoserver_install_dir, DEPLOYMENT_DIR + "/stomptoserver"
 
 #Repo for the Stomp<->Manager Bridge
 set :stomptomanagerbridge_repository, "git@github.com:jicksta/stomptomanagerbridge.git"
-set :stomptomanagerbridge_install_dir, DEPLOYMENT_DIR + "/stomptoblsbridge"
+set :stomptomanagerbridge_install_dir, DEPLOYMENT_DIR + "/stomptomanagerbridge"
 
 #Repo for the Twinners System Scripts
 set :twinners_sys_scripts_repository, "git@github.com:jsgoecke/twinners_sys_scripts.git"
@@ -65,20 +65,18 @@ depend :remote, :gem, "daemons", ">= 1.0.10"
 depend :remote, :gem, "stompserver", ">= 0.9.9"
  
 before 'deploy', 'ahn:update'
-#after 'deploy:setup', :create_ics_user
+after 'deploy:setup', :create_ics_user
 after 'deploy:setup', :create_ics_folder
+after 'deploy:setup', :create_var_dirs
 after 'deploy:setup', 'ahn:init'
 after 'deploy:setup', 'bls:init'
+after 'deploy:setup', 'stomptomanagerbridge:init'
 after 'deploy:setup', 'twinners_sys_scripts:init'
+after 'deploy:setup', :create_stompserver_config
 after 'deploy:setup', :chmod_ics_folders
  
 task :create_ics_user do
   run "adduser ics"
-end
-
-task :chmod_ics_folders do
-  run "chown -R ics #{DEPLOYMENT_DIR}"
-  run "chgrp -R ics #{DEPLOYMENT_DIR}"
 end
 
 task :create_ics_folder do
@@ -87,6 +85,46 @@ task :create_ics_folder do
   run "chgrp -R #{group} #{DEPLOYMENT_DIR}"
 end
  
+task :chmod_ics_folders do
+  run "chown -R ics #{DEPLOYMENT_DIR}"
+  run "chgrp -R ics #{DEPLOYMENT_DIR}"
+end
+
+task :create_var_dirs do
+  begin
+  	run "mkdir /var/run/interactivechatsystems"
+  	run "mkdir /var/log/interactivechatsystems"
+  rescue => err
+  end
+end
+
+task :create_stompserver_config do
+
+  #First generate the directories we need
+  begin
+    run "mkdir #{DEPLOYMENT_DIR}/stompserver"
+    run "mkdir #{DEPLOYMENT_DIR}/stompserver/log"
+    run "mkdir #{DEPLOYMENT_DIR}/stompserver/etc"
+  rescue => err   
+  end
+
+  #Then the configuration file
+  run "echo '---' > #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+  run "echo ':daemon: true' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+  run "echo ':working_dir:' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+  run "echo ':storage: .queue' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+  run "echo ':queue: file' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+  run "echo ':auth: true' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+  run "echo ':debug: true' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+  run "echo ':group:' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+  run "echo ':user:' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+  run "echo ':host: 0.0.0.0' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+  run "echo ':port: 61613' >> #{DEPLOYMENT_DIR}/stompserver/stompserver.conf"
+
+  #Then the password file
+  run "echo 'testing:f13fa60c2ba5' > #{DEPLOYMENT_DIR}/stompserver/etc/.passwdc"
+end
+
 task :production do
   set :user, "root"
   set :use_sudo, "false"
@@ -178,19 +216,57 @@ namespace :bls do
   end
 end
 
+namespace :stomptomanagerbridge do
+
+  task :init do
+    run "git clone #{stomptomanagerbridge_repository} #{stomptomanagerbridge_install_dir}"
+  end
+
+  task :update do
+    run "git pull #{stomptomanagerbridge_install_dir}"
+  end
+
+  Restarter = lambda do |operation|
+    action, monitor_state = case operation
+      when :start : %w[ start monitor ]
+      when :stop : %w[ stop unmonitor ]
+    end
+    run "monit #{monitor_state} ahn"
+    run "/etc/init.d/bls stop"
+    run "/etc/init.d/bls start"
+  end
+
+  task :start do
+    on_rollback { Restarter[:stop] }
+    Restarter[:start]
+  end
+
+  task :stop do
+    on_rollback { Restarter[:start] }
+    Restarter[:stop]
+  end
+
+  task :restart do
+    stop
+    start
+  end
+end
+
 namespace :twinners_sys_scripts do
 
   task :init do
     run "git clone #{twinners_sys_scripts_repository} #{twinners_sys_scripts_install_dir}"
-	run "ln -s #{twinners_sys_scripts_install_dir}/init.d/ahn /etc/init.d/ahn"
-	run "ln -s #{twinners_sys_scripts_install_dir}/init.d/bls /etc/init.d/bls"
-	run "ln -s #{twinners_sys_scripts_install_dir}/init.d/stompserver /etc/init.d/stompserver"
-	run "ln -s #{twinners_sys_scripts_install_dir}/init.d/stomptoblsbridge /etc/init.d/stomptoblsbridge"
-	run "ln -s #{twinners_sys_scripts_install_dir}/init.d/stomptomanagerbridge /etc/init.d/stomptomanagerbridge"
+	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/ahn /etc/init.d/ahn"
+	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/bls /etc/init.d/bls"
+	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/stompserver /etc/init.d/stompserver"
+	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/stomptoblsbridge /etc/init.d/stomptoblsbridge"
+	run "ln -sf #{twinners_sys_scripts_install_dir}/init.d/stomptomanagerbridge /etc/init.d/stomptomanagerbridge"
+	run "cp -f #{twinners_sys_scripts_install_dir}/monit/monitrc /etc/monitrc"
   end
 
   task :update do
     run "git pull #{twinners_sys_scripts_repository}"
+    run "cp -f #{twinners_sys_scripts_install_dir}/monit/monitrc /etc/monitrc"
   end
 end
 
