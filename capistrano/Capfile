@@ -1,8 +1,8 @@
 #Capistrano file for Twinners IVR
 load 'deploy' if respond_to?(:namespace) # cap2 differentiator
  
-PRODUCTION_SERVERS = %w[75.101.134.104]
-DEPLOYMENT_DIR = '/opt/cap_test/interactivechatsystems'
+PRODUCTION_SERVERS = %w[91.192.38.60]
+DEPLOYMENT_DIR = '/opt/interactivechatsystems'
 default_run_options[:pty] = true
 
 #===#
@@ -12,7 +12,7 @@ set :scm, :git
 #Repo for Adhearsion, Twinners Adhearsion Project and the Stomp<->BLS Bridge
 set :ahn_repository, 'git://github.com/jicksta/adhearsion.git'
 set :ahn_install_dir, DEPLOYMENT_DIR + "/adhearsion"
-set :twinners_repository, "git@github.com:jicksta/twinners.git"
+set :twinners_repository, "git@github.com:interactivechatsystems/twinners.git"
 set :twinners_install_dir, DEPLOYMENT_DIR + "/twinners"
 
 #Repo for the runtime of BLS
@@ -20,11 +20,11 @@ set :bls_repository, "git@github.com:interactivechatsystems/bls_runtime.git"
 set :bls_install_dir, DEPLOYMENT_DIR + "/bls"
 
 #Repo for the Stomp<->Manager Bridge
-set :stomptomanagerbridge_repository, "git@github.com:jicksta/stomptomanagerbridge.git"
+set :stomptomanagerbridge_repository, "git@github.com:interactivechatsystems/stomptomanagerbridge.git"
 set :stomptomanagerbridge_install_dir, DEPLOYMENT_DIR + "/stomptomanagerbridge"
 
 #Repo for the Twinners System Scripts
-set :twinners_sys_scripts_repository, "git@github.com:jsgoecke/twinners_sys_scripts.git"
+set :twinners_sys_scripts_repository, "git@github.com:interactivechatsystems/twinners_sys_scripts.git"
 set :twinners_sys_scripts_install_dir, DEPLOYMENT_DIR + "/twinners_sys_scripts"
 #===#
 
